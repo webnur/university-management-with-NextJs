@@ -11,6 +11,7 @@ import {
   isLoggedIn,
   storeUserInfo,
 } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   id: string;
@@ -19,11 +20,15 @@ type FormValues = {
 
 const LoginPage = () => {
   // console.log(getUserInfo());
-  console.log(isLoggedIn());
+  // console.log(isLoggedIn());
+  const router = useRouter();
   const [userLogin] = useUserLoginMutation();
   const onsubmit: SubmitHandler<FormValues> = async (data: any) => {
     try {
       const res = await userLogin({ ...data }).unwrap();
+      if (res?.data?.accessToken) {
+        router.push("/profile");
+      }
       storeUserInfo({ accessToken: res?.data?.accessToken });
     } catch (error) {
       console.error("form error", error);
