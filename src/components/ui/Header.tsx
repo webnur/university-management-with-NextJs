@@ -2,7 +2,7 @@ import { Avatar, Button, Dropdown, Layout, MenuProps, Row, Space } from "antd";
 
 const { Header: ANTHeader } = Layout;
 import { UserOutlined } from "@ant-design/icons";
-import { removeUserInfo } from "@/services/auth.service";
+import { getUserInfo, removeUserInfo } from "@/services/auth.service";
 import { authKey } from "@/constants/storageKey";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +13,7 @@ const Header = () => {
     router.push("/login");
   };
 
+  const { role } = getUserInfo() as any;
   const items: MenuProps["items"] = [
     {
       key: 0,
@@ -37,6 +38,13 @@ const Header = () => {
           height: "100%",
         }}
       >
+        <span
+          style={{
+            color: "#fff",
+          }}
+        >
+          {role}
+        </span>
         <Dropdown menu={{ items }}>
           <a>
             <Space wrap size={16}>
