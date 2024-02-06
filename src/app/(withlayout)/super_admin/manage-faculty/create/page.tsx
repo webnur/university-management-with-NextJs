@@ -1,10 +1,7 @@
-import ActionBar from "@/components/ui/ActionBar";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
-import { Button } from "antd";
-import Link from "next/link";
 import React from "react";
 
-const ManageFacultyPage = () => {
+const CreateFaculty = () => {
   return (
     <div>
       <UMBreadCrumb
@@ -17,15 +14,15 @@ const ManageFacultyPage = () => {
             label: "manage-faculty",
             link: "/super_admin/manage-faculty",
           },
+          {
+            label: "manage-faculty",
+            link: "/super_admin/manage-faculty/create",
+          },
         ]}
       />
-      <ActionBar title="Manage-faculty">
-        <Link href="/super_admin/manage-faculty/create">
-          <Button type="primary">Create Faculty</Button>
-        </Link>
-      </ActionBar>
+      <h1>create Faculty</h1>
     </div>
   );
 };
 
-export default ManageFacultyPage;
+export default CreateFaculty;
