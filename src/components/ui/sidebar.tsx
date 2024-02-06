@@ -11,7 +11,6 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   // const role = USER_ROLE.STUDENT;
   const { role } = getUserInfo() as any;
-  console.log(role);
   return (
     <Sider
       collapsible
