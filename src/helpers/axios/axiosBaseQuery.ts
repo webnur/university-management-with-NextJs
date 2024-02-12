@@ -1,4 +1,4 @@
-import { IMena } from "@/types";
+import { IMeta } from "@/types";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import axios from "axios";
 import type { AxiosRequestConfig, AxiosError } from "axios";
@@ -13,7 +13,7 @@ export const axiosBaseQuery =
       method: AxiosRequestConfig["method"];
       data?: AxiosRequestConfig["data"];
       params?: AxiosRequestConfig["params"];
-      meta?: IMena;
+      meta?: IMeta;
       contentType?: string;
       headers?: AxiosRequestConfig["headers"];
     },
@@ -31,7 +31,8 @@ export const axiosBaseQuery =
           contentType: contentType || "application/json",
         },
       });
-      return { data: result.data };
+      // return { data: result.data };
+      return result;
     } catch (axiosError) {
       const err = axiosError as AxiosError;
       return {

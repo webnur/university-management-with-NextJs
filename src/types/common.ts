@@ -1,12 +1,12 @@
-export interface IMena {
+export interface IMeta {
   limit: number;
   page: number;
-  size: number;
+  total: number;
 }
 
 export type ResponseSuccessTypes = {
   data: any;
-  meta?: IMena;
+  meta?: IMeta;
 };
 
 export type IGenericErrorResponse = {
@@ -18,4 +18,12 @@ export type IGenericErrorResponse = {
 export type IGenericErrorMessage = {
   path: string | number;
   message: string;
+};
+
+export type IDepartment = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
