@@ -1,6 +1,6 @@
 type ActionBarProps = {
   title: string;
-  children: React.ReactElement | React.ReactNode;
+  children?: React.ReactElement | React.ReactNode;
 };
 const ActionBar = ({ title, children }: ActionBarProps) => {
   return (
