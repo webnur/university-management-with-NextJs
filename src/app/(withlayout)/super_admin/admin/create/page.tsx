@@ -147,7 +147,7 @@ const CreateAdmin = () => {
                 span={8}
                 style={{ marginBottom: "10px" }}
               >
-                <UploadImage />
+                <UploadImage name="file" />
               </Col>
             </Row>
           </div>

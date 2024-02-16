@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 import type { GetProp, UploadProps } from "antd";
+import Image from "next/image";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -22,8 +23,11 @@ const beforeUpload = (file: FileType) => {
   }
   return isJpgOrPng && isLt2M;
 };
+type ImageUploadProps = {
+  name: string;
+};
 
-const UploadImage = () => {
+const UploadImage = ({ name }: ImageUploadProps) => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
 
@@ -51,16 +55,22 @@ const UploadImage = () => {
   return (
     <>
       <Upload
-        name="avatar"
+        name={name}
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+        action="/api/file"
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >
         {imageUrl ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+          <Image
+            src={imageUrl}
+            alt="avatar"
+            style={{ width: "100%" }}
+            width={100}
+            height={100}
+          />
         ) : (
           uploadButton
         )}
