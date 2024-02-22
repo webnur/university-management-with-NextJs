@@ -1,8 +1,7 @@
 import { IMeta } from "@/types";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-import axios from "axios";
 import type { AxiosRequestConfig, AxiosError } from "axios";
-import { instance as axiosIntance } from "./axiosInstance";
+import { instance as axiosInstance } from "./axiosInstance";
 
 export const axiosBaseQuery =
   (
@@ -15,26 +14,24 @@ export const axiosBaseQuery =
       params?: AxiosRequestConfig["params"];
       meta?: IMeta;
       contentType?: string;
-      headers?: AxiosRequestConfig["headers"];
     },
     unknown,
     unknown
   > =>
   async ({ url, method, data, params, contentType }) => {
     try {
-      const result = await axiosIntance({
+      const result = await axiosInstance({
         url: baseUrl + url,
         method,
         data,
         params,
         headers: {
-          contentType: contentType || "application/json",
+          "Content-Type": contentType || "application/json",
         },
       });
-      // return { data: result.data };
       return result;
     } catch (axiosError) {
-      const err = axiosError as AxiosError;
+      let err = axiosError as AxiosError;
       return {
         error: {
           status: err.response?.status,

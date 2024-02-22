@@ -1,4 +1,5 @@
 "use client";
+
 import Form from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
@@ -6,19 +7,22 @@ import FormSelectField from "@/components/Forms/FormSelectField";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import UMBreadCrumb from "@/components/ui/UMBreadCrumb";
 import UploadImage from "@/components/ui/uploadImage";
-import { BloodGroupOptions, genterOptions } from "@/constants/global";
+import { bloodGroupOptions, genderOptions } from "@/constants/global";
+import { useAddAdminWithFormDataMutation } from "@/redux/api/adminApi";
 import { useDepartmentsQuery } from "@/redux/api/departmentApi";
 import { adminSchema } from "@/schemas/admin";
 import { IDepartment } from "@/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { Button, Col, Row } from "antd";
-import React from "react";
+import { Button, Col, Row, message } from "antd";
 
-const CreateAdmin = () => {
+const CreateAdminPage = () => {
   const { data, isLoading } = useDepartmentsQuery({ limit: 100, page: 1 });
 
+  const [addAdminWithFormData] = useAddAdminWithFormDataMutation();
+  //@ts-ignore
   const departments: IDepartment[] = data?.departments;
+
   const departmentOptions =
     departments &&
     departments?.map((department) => {
@@ -27,13 +31,24 @@ const CreateAdmin = () => {
         value: department?.id,
       };
     });
-  const onsubmit = async (data: any) => {
+
+  const onSubmit = async (values: any) => {
+    const obj = { ...values };
+    const file = obj["file"];
+    delete obj["file"];
+    const data = JSON.stringify(obj);
+    const formData = new FormData();
+    formData.append("file", file as Blob);
+    formData.append("data", data);
+    message.loading("Creating...");
     try {
-      console.log(data);
-    } catch (error) {
-      console.error("form error", error);
+      await addAdminWithFormData(formData);
+      message.success("Admin created successfully!");
+    } catch (err: any) {
+      console.error(err.message);
     }
   };
+
   return (
     <div>
       <UMBreadCrumb
@@ -46,16 +61,12 @@ const CreateAdmin = () => {
             label: "admin",
             link: "/super_admin/admin",
           },
-          {
-            label: "create",
-            link: "/super_admin/admin/create",
-          },
         ]}
       />
-      <h1>create admin</h1>
+      <h1>Create Admin</h1>
 
       <div>
-        <Form submitHandler={onsubmit} resolver={yupResolver(adminSchema)}>
+        <Form submitHandler={onSubmit} resolver={yupResolver(adminSchema)}>
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -64,14 +75,21 @@ const CreateAdmin = () => {
               marginBottom: "10px",
             }}
           >
-            <p style={{ marginBottom: "10px", fontSize: "18px" }}>
+            <p
+              style={{
+                fontSize: "18px",
+                marginBottom: "10px",
+              }}
+            >
               Admin Information
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
@@ -83,7 +101,9 @@ const CreateAdmin = () => {
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
@@ -95,7 +115,9 @@ const CreateAdmin = () => {
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
@@ -107,24 +129,28 @@ const CreateAdmin = () => {
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="password"
                   name="password"
                   size="large"
-                  label="First Name"
+                  label="Password"
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormSelectField
                   size="large"
                   name="admin.gender"
-                  options={genterOptions}
+                  options={genderOptions}
                   label="Gender"
                   placeholder="Select"
                 />
@@ -132,7 +158,9 @@ const CreateAdmin = () => {
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormSelectField
                   size="large"
@@ -145,13 +173,16 @@ const CreateAdmin = () => {
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <UploadImage name="file" />
               </Col>
             </Row>
           </div>
-          {/* basic informantion  */}
+
+          {/* basic info */}
           <div
             style={{
               border: "1px solid #d9d9d9",
@@ -160,101 +191,111 @@ const CreateAdmin = () => {
               marginBottom: "10px",
             }}
           >
-            <p style={{ marginBottom: "10px", fontSize: "18px" }}>
+            <p
+              style={{
+                fontSize: "18px",
+                marginBottom: "10px",
+              }}
+            >
               Basic Information
             </p>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="email"
                   name="admin.email"
                   size="large"
-                  label="Email"
+                  label="Email address"
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
                   name="admin.contactNo"
                   size="large"
-                  label="Contact No"
+                  label="Contact No."
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
                   name="admin.emergencyContactNo"
                   size="large"
-                  label="Emergency Contact No"
+                  label="Emergency Contact No."
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormDatePicker
                   name="admin.dateOfBirth"
-                  label="Date Of Birth"
+                  label="Date of birth"
                   size="large"
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormSelectField
                   size="large"
                   name="admin.bloodGroup"
-                  options={BloodGroupOptions}
-                  label="Blood Group"
+                  options={bloodGroupOptions}
+                  label="Blood group"
                   placeholder="Select"
                 />
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
-                style={{ marginBottom: "10px" }}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 <FormInput
                   type="text"
-                  size="large"
                   name="admin.designation"
+                  size="large"
                   label="Designation"
                 />
               </Col>
-              <Col
-                className="gutter-row"
-                span={12}
-                style={{ marginBottom: "10px" }}
-              >
+              <Col span={12} style={{ margin: "10px 0" }}>
                 <FormTextArea
                   name="admin.presentAddress"
-                  label="Present Address"
+                  label="Present address"
                   rows={4}
                 />
               </Col>
-              <Col
-                className="gutter-row"
-                span={12}
-                style={{ marginBottom: "10px" }}
-              >
+
+              <Col span={12} style={{ margin: "10px 0" }}>
                 <FormTextArea
                   name="admin.permanentAddress"
-                  label="Permanent Address"
+                  label="Permanent address"
                   rows={4}
                 />
               </Col>
@@ -269,4 +310,4 @@ const CreateAdmin = () => {
   );
 };
 
-export default CreateAdmin;
+export default CreateAdminPage;

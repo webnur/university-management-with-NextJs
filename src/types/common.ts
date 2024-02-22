@@ -27,3 +27,27 @@ export type IDepartment = {
   updatedAt: string;
   __v: number;
 };
+
+export type Name = {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+};
+
+export type IAdmin = {
+  id: string;
+  name: Name;
+  dateOfBirth: string;
+  gender: string;
+  bloodGroup: string;
+  email: string;
+  contactNo: string;
+  emergencyContactNo: string;
+  presentAddress: string;
+  permanentAddress: string;
+  managementDepartment: string;
+  designation: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
