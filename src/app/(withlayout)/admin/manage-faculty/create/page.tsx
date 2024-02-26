@@ -1,4 +1,6 @@
 "use client";
+import AcademicDepartmentField from "@/components/Forms/AcademicDepartmentField";
+import AcademicFacultyField from "@/components/Forms/AcademicFacultyField";
 import Form from "@/components/Forms/Form";
 import FormDatePicker from "@/components/Forms/FormDatePicker";
 import FormInput from "@/components/Forms/FormInput";
@@ -11,14 +13,27 @@ import {
   acDepartmentOptions,
   departmentOptions,
   genderOptions,
+  bloodGroupOptions,
 } from "@/constants/global";
-import { Button, Col, Row } from "antd";
+import { useAddFacultyWithFormDataMutation } from "@/redux/api/facultyApi";
+import { Button, Col, Row, message } from "antd";
 import React from "react";
 
 const CreateFaculty = () => {
-  const onSubmit = async (data: any) => {
+  const [addFacultyWithFormData] = useAddFacultyWithFormDataMutation();
+
+  const onSubmit = async (values: any) => {
+    const obj = { ...values };
+    const file = obj["file"];
+    delete obj["file"];
+    const data = JSON.stringify(obj);
+    const formData = new FormData();
+    formData.append("file", file as Blob);
+    formData.append("data", data);
+    message.loading("Creating...");
     try {
-      console.log(data);
+      await addFacultyWithFormData(formData);
+      message.success("Faculty created successfully!");
     } catch (error) {
       console.error(error);
     }
@@ -28,16 +43,16 @@ const CreateFaculty = () => {
       <UMBreadCrumb
         items={[
           {
-            label: "super_admin",
-            link: "/super_admin",
+            label: "admin",
+            link: "/admin",
           },
           {
             label: "manage-faculty",
-            link: "/super_admin/manage-faculty",
+            link: "/admin/manage-faculty",
           },
           {
-            label: "manage-faculty",
-            link: "/super_admin/manage-faculty/create",
+            label: "Create",
+            link: "/admin/manage-faculty/create",
           },
         ]}
       />
@@ -122,26 +137,34 @@ const CreateFaculty = () => {
                 span={8}
                 style={{ marginBottom: "10px" }}
               >
-                <FormSelectField
+                <AcademicFacultyField
+                  name="faculty.academicFaculty"
+                  label="Academic Faculty"
+                />
+                {/* <FormSelectField
                   size="large"
                   name="faculty.academicFaculty"
                   options={facultyOptions}
                   label="Academic Faculty"
                   placeholder="Select"
-                />
+                /> */}
               </Col>
               <Col
                 className="gutter-row"
                 span={8}
                 style={{ marginBottom: "10px" }}
               >
-                <FormSelectField
+                <AcademicDepartmentField
+                  name="faculty.academicDepartment"
+                  label="Academic Department"
+                />
+                {/* <FormSelectField
                   size="large"
                   name="faculty.academicDepartment"
                   options={acDepartmentOptions}
                   label="Academic Department"
                   placeholder="Select"
-                />
+                /> */}
               </Col>
               <Col
                 className="gutter-row"
@@ -196,6 +219,13 @@ const CreateFaculty = () => {
                   name="faculty.dateOfBirth"
                   label="Date of birth"
                   size="large"
+                />
+              </Col>
+              <Col span={8} style={{ margin: "10px 0" }}>
+                <FormSelectField
+                  name="faculty.bloodGroup"
+                  label="Blood group"
+                  options={bloodGroupOptions}
                 />
               </Col>
               <Col span={8} style={{ margin: "10px 0" }}>
